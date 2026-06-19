@@ -1,4 +1,4 @@
-## **- FPGA Simon Game: A Spartan 3E Hardware Implementation** 
+## FPGA Simon Game: A Spartan-3E Hardware Implementation 
 
 ## Project Overview & Objectives 
 
@@ -14,7 +14,7 @@ This project involves the hardware-level implementation of the Simon memory game
 
 - **User Accessibility Logic:** Implementing an "Easy Mode"  featuring a multi-strike counter system for increased fault tolerance. 
 
-## - System Versatility & Dual Mode Operation 
+## System Versatility & Dual-Mode Operation 
 
 The architecture is designed for dual-output flexibility, ensuring the game is functional across different hardware setups: 
 
@@ -22,7 +22,7 @@ The architecture is designed for dual-output flexibility, ensuring the game is f
 
 - **Stand-alone Mode:** Enables full playability using  only the Spartan-3E Starter Kit's integrated peripherals. Users interact with the game via on-board buttons while observing sequence patterns on the discrete LEDs. 
 
-## - Peripheral Mapping for Stand alone Play 
+## Peripheral Mapping for Stand-alone Play 
 
 During execution, the physical inputs are mapped to specific logical values and visual indicators: 
 
@@ -56,21 +56,21 @@ The top-level integration layer. It manages the instantiation of all sub-modules
 
 ## simon_fsm 
 
-The core logic engine, implemented as a synchronous Finite State Machine. 
+- The core logic engine, implemented as a synchronous Finite State Machine. 
 
-- **IDLE:** Quiescent state; waits for SW0 high to initiate  system variables. 
+   - **IDLE:** Quiescent state; waits for SW0 high to initiate  system variables. 
 
-- **GENERATE:** Captures a 2-bit value from the LFSR to  append to the sequence array. 
+   - **GENERATE:** Captures a 2-bit value from the LFSR to  append to the sequence array. 
 
-- **SHOW_SEQUENCE:** Iterates through the stored array,  driving the LEDs and VGA module. 
+   - **SHOW_SEQUENCE:** Iterates through the stored array,  driving the LEDs and VGA module. 
 
-- **USER_INPUT:** Captures debounced button pulses. 
+   - **USER_INPUT:** Captures debounced button pulses. 
 
-- **COMPARE:** Validates user input against the sequence  array index. 
+   - **COMPARE:** Validates user input against the sequence  array index. 
 
-- **NEXT_LEVEL / STRIKE:** A decision branch. If COMPARE  is successful, it increments the ronda_actual (round) counter. If unsuccessful and SW1 is active, it increments the strike counter; otherwise, it triggers a loss. 
+   - **NEXT_LEVEL / STRIKE:** A decision branch. If COMPARE  is successful, it increments the ronda_actual (round) counter. If unsuccessful and SW1 is active, it increments the strike counter; otherwise, it triggers a loss. 
 
-- **GAME_OVER:** Terminal state that resets the game or  holds the final score on the LCD/VGA. 
+   - **GAME_OVER:** Terminal state that resets the game or  holds the final score on the LCD/VGA. 
 
 ## vga_simon 
 
@@ -84,6 +84,10 @@ Provides signal conditioning for mechanical inputs. The module uses a clock_enab
 
 A 2-bit pseudo-random generator. Because this register shifts at 50 MHz, the human interaction delay between IDLE and SW0 activation serves as a high-entropy seed. The FSM takes a "snapshot" of the LFSR during the GENERATE state, ensuring a sequence that is effectively unpredictable to the player. 
 
+## lcd_score 
+
+Drives the 16x2 character LCD via a 4-bit interface. The module specifically maps to the **high nibble (D7-D4)** of the LCD data bus, as the lower nibble is not utilized in this 4-bit mode. 
+
 ## Easy Mode & Strike System 
 
 - The strike system, toggled via SW1, provides a hardware-level fault-tolerance mechanism. 
@@ -96,7 +100,7 @@ A 2-bit pseudo-random generator. Because this register shifts at 50 MHz, the hum
 
 - **Timing:** 50 MHz Clock (20 ns period); VGA 640x480  @ 60Hz. 
 
-- **Input Requirements:** Active-high logic. All buttons/switches  require PULLDOWN resistors and LVTTL or LVCMOS33 IO standards as specified in the UCF. 
+- **Input Requirements:** Active-high logic. All buttons/switches require PULLDOWN resistors and LVTTL or LVCMOS33 IO standards as specified in the UCF. 
 
 - **LCD Interface:** 4-bit mode operation (Data bits D7-D4). 
 
