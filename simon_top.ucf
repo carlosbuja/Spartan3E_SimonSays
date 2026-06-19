@@ -1,0 +1,85 @@
+# =============================================================
+# simon.ucf - Spartan-3E Starter Kit (XC3S500E)
+# Reloj 50 MHz, 4 botones, 4 switches, 8 LEDs
+# Puertos top-level:
+#   CLK, RST, SW0, BTN_WEST, BTN_NORTH, BTN_SOUTH_P, BTN_EAST, LED[7:0]
+# =============================================================
+
+# -------------------------
+# Reloj principal 50 MHz
+# -------------------------
+NET "CLK" LOC = "C9" | IOSTANDARD = LVCMOS33;
+NET "CLK" TNM_NET = "CLK";
+TIMESPEC TS_CLK = PERIOD "CLK" 20 ns HIGH 50%;
+
+# -------------------------
+# Reset global - OPCIÓN B SOLO
+# Rotary push-button (V16) como reset
+# -------------------------
+NET "RST" LOC = "V16" | IOSTANDARD = LVCMOS33 | PULLDOWN;
+
+# -------------------------
+# Interruptor SW0 (rightmost slide switch)
+# -------------------------
+NET "SW0" LOC = "L13" | IOSTANDARD = LVCMOS33 | PULLDOWN;
+NET "SW1" LOC = "L14" | IOSTANDARD = LVCMOS33 | PULLDOWN;
+
+# -------------------------
+# Botones del jugador (pull-down, activos a alto)
+# Mapeo lógico en tu diseno:
+#   BTN_WEST    › valor 3
+#   BTN_NORTH   › valor 2
+#   BTN_SOUTH_P › valor 1
+#   BTN_EAST    › valor 0
+# -------------------------
+NET "BTN_WEST"    LOC = "D18" | IOSTANDARD = LVTTL | PULLDOWN;
+NET "BTN_NORTH"   LOC = "V4"  | IOSTANDARD = LVTTL | PULLDOWN;
+
+# Usa BTN_SOUTH físico (C11) solo como botón de jugador
+NET "BTN_SOUTH_P" LOC = "K17" | IOSTANDARD = LVTTL | PULLDOWN;
+
+NET "BTN_EAST"    LOC = "H13" | IOSTANDARD = LVTTL | PULLDOWN;
+
+# -------------------------
+# LEDs discretos (activos a alto)
+# -------------------------
+NET "LED<7>"  LOC = "F9"  | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
+NET "LED<6>"  LOC = "E9"  | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
+NET "LED<5>"  LOC = "D11"  | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
+NET "LED<4>"  LOC = "C11" | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
+NET "LED<3>"  LOC = "F11" | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
+NET "LED<2>"  LOC = "E11" | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
+NET "LED<1>"  LOC = "E12" | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
+NET "LED<0>"  LOC = "F12"  | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
+
+# -------------------------
+# Ecra LCD (Display)
+# -------------------------
+NET "LCD_RS" LOC = "L18" | IOSTANDARD = LVCMOS33 | DRIVE = 4 | SLEW = QUIETIO;
+NET "LCD_RW" LOC = "L17" | IOSTANDARD = LVCMOS33 | DRIVE = 4 | SLEW = QUIETIO;
+NET "LCD_E"  LOC = "M18" | IOSTANDARD = LVCMOS33 | DRIVE = 4 | SLEW = QUIETIO;
+
+# -------------------------
+# Dados do LCD (Partilhados com a StrataFlash)
+# Mapeamento do barramento SF_D[3:0] do teu Top-Level 
+# (Fisicamente sao os bits D7, D6, D5 e D4 do LCD)
+# -------------------------
+NET "SF_D<3>" LOC = "M15" | IOSTANDARD = LVCMOS33 | DRIVE = 4 | SLEW = QUIETIO;
+NET "SF_D<2>" LOC = "P17" | IOSTANDARD = LVCMOS33 | DRIVE = 4 | SLEW = QUIETIO;
+NET "SF_D<1>" LOC = "R16" | IOSTANDARD = LVCMOS33 | DRIVE = 4 | SLEW = QUIETIO;
+NET "SF_D<0>" LOC = "R15" | IOSTANDARD = LVCMOS33 | DRIVE = 4 | SLEW = QUIETIO;
+
+
+# -------------------------
+# Saída VGA (1 bit por cor - Padrao Spartan-3E)
+# -------------------------
+NET "HSYNC" LOC = "F15" | IOSTANDARD = LVTTL | DRIVE = 8 | SLEW = FAST;
+NET "VSYNC" LOC = "F14" | IOSTANDARD = LVTTL | DRIVE = 8 | SLEW = FAST;
+NET "VGA_R" LOC = "H14" | IOSTANDARD = LVTTL | DRIVE = 8 | SLEW = FAST;
+NET "VGA_G" LOC = "H15" | IOSTANDARD = LVTTL | DRIVE = 8 | SLEW = FAST;
+NET "VGA_B" LOC = "G15" | IOSTANDARD = LVTTL | DRIVE = 8 | SLEW = FAST;                                                                                                                                                                               
+
+# -------------------------
+# Desativar a Memória StrataFlash (Crucial para o LCD funcionar)
+# -------------------------
+NET "SF_CE0" LOC = "D16" | IOSTANDARD = LVCMOS33 | DRIVE = 4 | SLEW = QUIETIO;
